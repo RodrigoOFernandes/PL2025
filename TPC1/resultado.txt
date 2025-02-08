@@ -1,0 +1,2 @@
+Soma até '=': 14
+Soma final: 28

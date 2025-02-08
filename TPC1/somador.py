@@ -7,19 +7,19 @@ def parser(caminho_do_arquivo):
         buffer = ""
         buffer_num = ""
 
-        with(open(caminho_do_arquivo, 'r', encoding = 'utf-8') as arquivo):
+        with open(caminho_do_arquivo, 'r', encoding='utf-8') as arquivo, open("resultado.txt", "w", encoding="utf-8") as resultado:
             conteudo = arquivo.read()
             for caractere in conteudo:
                 if caractere.isalpha():
                     buffer += caractere 
                 else:
                     buffer = ""
-                
+
                 if "Off" in buffer:
                     somar = False                
                 elif "On" in buffer:
                     somar = True 
-                
+
                 if caractere.isdigit():
                     buffer_num += caractere
                 else:
@@ -29,12 +29,12 @@ def parser(caminho_do_arquivo):
                         buffer_num = ""
 
                 if caractere == "=":
-                    print(f"Soma até '=': {somador}")
-                
+                    resultado.write(f"Soma até '=': {somador}\n")
+
             if somar and buffer_num:
                 somador += int(buffer_num)
 
-        print(f"Soma final: {somador}")
+            resultado.write(f"Soma final: {somador}\n")
 
     except FileNotFoundError:
         print("Erro: o arquivo não foi encontrado")
@@ -42,8 +42,8 @@ def parser(caminho_do_arquivo):
         print(f"Erro ao ler o arquivo: {e}")
 
 if __name__ == "__main__":
-    if(len(sys.argv) != 2):
+    if len(sys.argv) != 2:
         print("Uso: python3 somador.py <caminho_do_arquivo>")
     else:
         caminho_do_arquivo = sys.argv[1]
-        parser_txt(caminho_do_arquivo)
+        parser(caminho_do_arquivo)
