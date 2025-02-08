@@ -1,6 +1,6 @@
 import sys
 
-def parser_txt(caminho_do_arquivo):
+def parser(caminho_do_arquivo):
     try:
         somador = 0
         somar = True
@@ -43,7 +43,7 @@ def parser_txt(caminho_do_arquivo):
 
 if __name__ == "__main__":
     if(len(sys.argv) != 2):
-        print("Uso: python3 somador.py <carminho_do_arquivo.txt>")
+        print("Uso: python3 somador.py <caminho_do_arquivo>")
     else:
         caminho_do_arquivo = sys.argv[1]
         parser_txt(caminho_do_arquivo)
