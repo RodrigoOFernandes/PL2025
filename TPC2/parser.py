@@ -1,52 +1,77 @@
 import re
 
-def main():
-    compositores = set()  
-    periodos_interesse = {"Barroco", "Clássico", "Medieval", "Renascimento", "Século XX", "Contemporâneo", "Romântico"}
-    periodos_count = {periodo: 0 for periodo in periodos_interesse}  
-    periodos_obras = {periodo: [] for periodo in periodos_interesse}  
+def parse_csv_with_regex(file_path):
+    # Regex para capturar linhas completas com exatamente 7 campos
+    pattern = re.compile(r'^([^;\n]+(?:\n[^;\n]+)*;){6}\w+$', re.MULTILINE)
     
-    with open("obras.csv", 'r', encoding="utf-8") as file: 
-        data = file.read()  
-        regex = r'^(.*?);(.*?);(.*?);(.*?);(.*?);(.*?);(.*?)$'
-        
-        lines = re.findall(regex, data, re.MULTILINE | re.DOTALL)
-        
-        for line in lines[1:]:  
-            nome_obra = line[0].strip()
-            periodo = line[3].strip()  
-            compositor = line[4].strip() 
-            
-            if periodo in periodos_interesse:
-                compositores.add(compositor)
-                
-                if periodo in periodos_count:
-                    periodos_count[periodo] += 1
-                else:
-                    periodos_count[periodo] = 1
-                
-                if periodo in periodos_obras:
-                    periodos_obras[periodo].append(nome_obra)
-                else:
-                    periodos_obras[periodo] = [nome_obra]
+    # Ler o arquivo CSV inteiro
+    with open(file_path, "r", encoding="utf-8") as file:
+        content = file.read()
     
-    compositores_ordenados = sorted(compositores)
+    # Encontrar todas as correspondências no conteúdo
+    matches = pattern.finditer(content)
     
-    for periodo in periodos_obras:
-        periodos_obras[periodo].sort()
+    # Lista para armazenar as obras corretamente separadas
+    obras = []
     
-    with open("resultado.txt", 'w', encoding="utf-8") as output_file:
-        output_file.write("Lista ordenada alfabeticamente dos compositores musicais:\n")
-        for compositor in compositores_ordenados:
-            output_file.write(compositor + "\n")
-        
-        output_file.write("\nDistribuição das obras por período:\n")
-        for periodo, count in periodos_count.items():
-            output_file.write(f"{periodo}: {count} obras\n")
-        
-        output_file.write("\nDicionário de períodos com títulos de obras ordenados:\n")
-        for periodo, obras in periodos_obras.items():
-            output_file.write(f"{periodo}: {', '.join(obras)}\n")
+    # Processar as correspondências
+    for match in matches:
+        linha = match.group(0)  # Captura a string completa correspondente ao regex
+        fields = linha.strip().split(';')  
+        if len(fields) == 7:  
+            obras.append({
+                'nome': fields[0],
+                'desc': fields[1],
+                'anoCriacao': fields[2],
+                'periodo': fields[3],
+                'compositor': fields[4],
+                'duracao': fields[5],
+                '_id': fields[6]
+            })
+    
+    return obras
 
-if __name__ == "__main__":
-    main()
+# Caminho do arquivo CSV
+csv_path = "obras.csv"
+
+# Executar o parser
+obras = parse_csv_with_regex(csv_path)
+
+# 1. Lista ordenada alfabeticamente dos compositores
+compositores = sorted(list(set(obra['compositor'] for obra in obras)))
+print("Compositores ordenados alfabeticamente:")
+for compositor in compositores:
+    print(compositor)
+
+# 2. Distribuição das obras por período
+distribuicao_periodo = {}
+for obra in obras:
+    periodo = obra['periodo']
+    if periodo in distribuicao_periodo:
+        distribuicao_periodo[periodo] += 1
+    else:
+        distribuicao_periodo[periodo] = 1
+print("\nDistribuição das obras por período:")
+for periodo, quantidade in distribuicao_periodo.items():
+    print(f"{periodo}: {quantidade} obras")
+
+# 3. Dicionário com listas alfabéticas dos títulos das obras por período
+obras_por_periodo = {}
+for obra in obras:
+    periodo = obra['periodo']
+    titulo = obra['nome']
+    if periodo in obras_por_periodo:
+        obras_por_periodo[periodo].append(titulo)
+    else:
+        obras_por_periodo[periodo] = [titulo]
+
+# Ordenar as listas de títulos alfabeticamente
+for periodo in obras_por_periodo:
+    obras_por_periodo[periodo].sort()
+
+print("\nTítulos das obras por período:")
+for periodo, titulos in obras_por_periodo.items():
+    print(f"{periodo}:")
+    for titulo in titulos:
+        print(f"  - {titulo}")
+
