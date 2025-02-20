@@ -2,15 +2,26 @@
 
 ## Resumo
 
-Este script em Python lê um arquivo CSV (`obras.csv`) contendo informações sobre obras musicais, incluindo o título da obra, o período musical e o compositor. O script filtra as obras com base em períodos específicos (Barroco, Clássico, Medieval, Renascimento, Século XX, Contemporâneo e Romântico) e gera um arquivo `resultado.txt` com as seguintes informações:
+Este script em Python lê um arquivo CSV (`obras.csv`) contendo informações sobre obras musicais, incluindo o título da obra, o período musical e o compositor. Utilizando expressões regulares (regex), o script processa o arquivo para garantir que apenas linhas corretamente formatadas sejam lidas. O programa gera um arquivo `resultado.txt` com as seguintes informações:
 
 1. **Lista alfabética de compositores** cujas obras estão nos períodos selecionados.
 2. **Distribuição das obras por período**, indicando quantas obras existem em cada período.
 3. **Dicionário de períodos com títulos de obras ordenados**, mostrando as obras associadas a cada período.
 
+## Expressão Regular Utilizada
+
+Para garantir que cada linha contém exatamente 7 campos separados por `;`, utilizamos a seguinte regex:
+
+```python
+pattern = re.compile(r'([^;\n]*(?:\n[^;\n]+)*;){6}.+$', re.MULTILINE)
+```
+
+Essa regex assegura que cada linha corresponde ao formato esperado do CSV, permitindo que apenas registros válidos sejam processados.
+
 ### Funcionalidades
 
 - Filtra obras musicais com base em períodos específicos.
+- Utiliza regex para extrair apenas as linhas corretamente formatadas.
 - Gera uma lista ordenada alfabeticamente dos compositores.
 - Contabiliza o número de obras por período.
 - Organiza as obras por período e as ordena alfabeticamente.
@@ -56,6 +67,7 @@ Medieval: Cantigas de Santa Maria
 
 ## Observações
 
-- Para lidar com ficheiros csv mal formatados, como é o caso do que está no repositório, o parsing é feito com auxílio do regex
-- O script ignora períodos que não estão na lista de interesse.
+- O script ignora a primeira linha do CSV, que geralmente contém cabeçalhos.
+- Utiliza regex para garantir que apenas registros com 7 campos sejam processados corretamente.
 - Caso o arquivo `obras.csv` não seja encontrado, o script exibirá uma mensagem de erro.
+
