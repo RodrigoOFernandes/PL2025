@@ -14,7 +14,7 @@ def tokenize(code):
         ('LIMIT', r'\bLIMIT\b', re.IGNORECASE),
         ('VARS', r'\?[a-zA-Z_][a-zA-Z0-9_]*'),
         ('A', r'\ba\b'),
-        ('URIS', r'[a-zA-Z]+:[A-Za-z0-9_/.-]*'),
+        ('URIS', r'[a-zA-Z]+:[A-Za-z0-9_/-]*'),
         ('LITS', r'"[^"]*"'),
         ('NEWLINE', r'\n'),
         ('SKIP',  r'[ \t]+'),       
@@ -33,8 +33,6 @@ def tokenize(code):
             continue
         elif tipo == 'NUM':
             valor = int(valor)
-        elif tipo == 'LITS':
-            valor = valor.strip('"')
         elif tipo == 'ERRO':
             print(f"Erro léxico na linha {linha}: {valor}", file=sys.stderr)
             continue
