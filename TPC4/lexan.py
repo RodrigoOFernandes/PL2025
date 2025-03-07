@@ -43,14 +43,29 @@ def tokenize(code):
             linha += 1
 
     return reconhecidos
-    
 
 def main():
-    for linha in sys.stdin:
-        tokens = tokenize(linha)
-        for token in tokens:
-            print(token)
+    if len(sys.argv) != 2:
+        print("Uso: python script.py <arquivo>", file=sys.stderr)
+        sys.exit(1)
+
+    caminho = sys.argv[1]
+    try:
+        with open(caminho, 'r') as file:
+            texto = file.read()
+    except IOError as e:
+        print(f"Erro ao abrir o arquivo: {e}", file=sys.stderr)
+        sys.exit(1)
+
+    tokens = tokenize(texto)
+
+    try:
+        with open("resultados.txt", "w") as f:
+            for token in tokens:
+                f.write(f"{token}\n")
+    except IOError as e:
+        print(f"Erro ao escrever no arquivo: {e}", file=sys.stderr)
+        sys.exit(1)
 
 if __name__ == "__main__":
     main()
-
