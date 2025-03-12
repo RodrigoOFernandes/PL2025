@@ -33,8 +33,10 @@ def parse_stock(stock_file):
 
 def save_stock(stock_file, stock_dict):
     with open(stock_file, 'w') as file:
+        file.write('{\n "stock": [\n')
         for cod, data in stock_dict.items():
             file.write(f'{{"cod": "{cod}", "nome": "{data["nome"]}", "quant": {data["quant"]}, "preco": {data["preco"]:.2f}}}\n')
+        file.write('    ]\n}')
 
 def calcular_troco(saldo):
     moedas = [200, 100, 50, 20, 10, 5, 2, 1]  
