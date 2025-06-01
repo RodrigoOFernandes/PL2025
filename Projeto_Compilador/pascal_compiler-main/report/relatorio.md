@@ -618,7 +618,7 @@ Semantic analysis completed successfully.
 Code generation completed
 Compilation successful!
 ```
-### Árvore de Decisão
+### Árvore de Derivação
 ![Exemplo Árvore de Decisão](ad_hellopas.png)
 
 ### AST Otimizada
